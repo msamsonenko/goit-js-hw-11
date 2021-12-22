@@ -26,7 +26,6 @@ const gallery = document.querySelector('.gallery');
 const loadBtn = document.querySelector('.load-button');
 
 form.addEventListener('submit', onFormSubmit);
-loadBtn.addEventListener('click', onBtnClick);
 
 function onFormSubmit(e) {
   e.preventDefault();
@@ -38,9 +37,10 @@ function onFormSubmit(e) {
   console.log(e.currentTarget);
   console.log(searchQuery.value);
   fetchPictures(searchQuery.value).then(pictureMarkup);
+  // loadBtn.addEventListener('click', () => {
+  //   fetchPictures(searchQuery.value).then(pictureMarkup);
+  // });
 }
-
-function onBtnClick() {}
 
 function pictureMarkup(photos) {
   const { hits, totalHits } = photos;
