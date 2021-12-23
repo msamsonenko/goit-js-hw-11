@@ -6,7 +6,7 @@
   "homepage": "https://msamsonenko.github.io/goit-js-hw-11",
   "scripts": {
     "dev": "parcel src/index.html",
-    "build": "parcel build src/*.html --public-url /goit-js-hw-11/"
+    "build": "parcel build src/index.html --public-url /goit-js-hw-11/"
   },
   "repository": {
     "type": "git",
