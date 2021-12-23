@@ -1,7 +1,8 @@
-
 import Notiflix from 'notiflix';
 
-import  PicturesApi  from './api-images';
+import PicturesApi from './api-images';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const form = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
@@ -9,43 +10,42 @@ const loadBtn = document.querySelector('.load-button');
 
 const pictures = new PicturesApi();
 
-console.log(pictures)
+let gallerySlider = new SimpleLightbox('.gallery a');
+gallerySlider.on('show.simplelightbox');
 
 form.addEventListener('submit', onFormSubmit);
 loadBtn.addEventListener('click', onBtnClick);
 
 function onFormSubmit(e) {
   e.preventDefault();
-const {
+  const {
     elements: { searchQuery },
   } = e.currentTarget;
 
-  pictures.query = searchQuery.value;
   gallery.innerHTML = '';
+  pictures.query = searchQuery.value;
   pictures.resetPage();
-  pictures.fetchPictures().then(result => {
-    showNotification(result);
-    pictureMarkup(result);
-  })
-  
-  // console.log(e.currentTarget);
-  // console.log(searchQuery.value);
-  // fetchPictures(searchQuery.value).then(pictureMarkup);
+  pictures.getPictures().then(response => {
+    if (response.data.hits.length === 0) {
+      return showNotification(response);
+    }
+    showNotification(response);
+    pictureMarkup(response);
+  });
+  loadBtn.classList.toggle('is-hidden');
 }
 
-function onBtnClick(){
-  pictures.fetchPictures().then(pictureMarkup);
+function onBtnClick() {
+  pictures.getPictures().then(pictureMarkup);
   Notiflix.Loading.remove(500);
-
 }
 
-function pictureMarkup(photos) {
-  console.log(photos)
-  const { hits, total } = photos;
+function pictureMarkup({ data }) {
+  const { hits } = data;
   const markUp = hits
     .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
       return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy"  />
+  <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy"  /></a>
   <div class="info">
     <p class="info-item">
       <b>Likes</b>
@@ -70,13 +70,16 @@ function pictureMarkup(photos) {
 
   return gallery.insertAdjacentHTML('beforeend', markUp);
 }
-function showNotification(result){
-  if(result.hits.length === 0){
-    return Notiflix.Notify.failure(`Sorry, there are ${result.total} images matching your search query. Please try again.`);
-    }
-    if(result.hits.length === 1){
-     return Notiflix.Notify.success(`Hooray! We found ${result.total} image.`);
-    }
+function showNotification({ data }) {
+  if (data.hits.length === 0) {
     Notiflix.Loading.remove(500);
-   return Notiflix.Notify.success(`Hooray! We found ${result.total} images.`);
+    return Notiflix.Notify.failure(
+      `Sorry, there are ${data.total} images matching your search query. Please try again.`,
+    );
+  }
+  if (data.hits.length === 1) {
+    return Notiflix.Notify.success(`Hooray! We found ${data.total} image.`);
+  }
+  Notiflix.Loading.remove(500);
+  return Notiflix.Notify.success(`Hooray! We found ${data.total} images.`);
 }
