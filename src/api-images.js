@@ -1,6 +1,6 @@
 const BASE_URL = 'https://pixabay.com/api/';
 const ACCESS_KEY = '24444752-6eeb7e9783b35bc5419290dda';
-const SEARCH_OPTIONS = 'image_type=photo&orientation=horizontal&safesearch=true&per_page=40';
+const SEARCH_OPTIONS = 'image_type=photo&orientation=horizontal&safesearch=true&per_page=4';
 import axios from 'axios';
 import Notiflix from 'notiflix';
 

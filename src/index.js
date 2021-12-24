@@ -1,6 +1,7 @@
 import Notiflix from 'notiflix';
 
 import PicturesApi from './api-images';
+import Slider from './slider';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -9,9 +10,11 @@ const gallery = document.querySelector('.gallery');
 const loadBtn = document.querySelector('.load-button');
 
 const pictures = new PicturesApi();
+const slider = new Slider();
+console.log(pictures);
+console.log(slider);
 
-let gallerySlider = new SimpleLightbox('.gallery a');
-gallerySlider.on('show.simplelightbox');
+// console.log(gallerySlider);
 
 form.addEventListener('submit', onFormSubmit);
 loadBtn.addEventListener('click', onBtnClick);
@@ -27,16 +30,25 @@ function onFormSubmit(e) {
   pictures.resetPage();
   pictures.getPictures().then(response => {
     if (response.data.hits.length === 0) {
+      loadBtn.classList.add('is-hidden');
       return showNotification(response);
     }
     showNotification(response);
     pictureMarkup(response);
+    loadBtn.classList.remove('is-hidden');
+    slider.createSlider();
+    console.log(slider.slide);
+
+    // console.log(slider.instance);
+    // let gallerySlider = new SimpleLightbox('.gallery a');
+    // gallerySlider.on('show.simplelightbox');
   });
-  loadBtn.classList.toggle('is-hidden');
 }
 
 function onBtnClick() {
   pictures.getPictures().then(pictureMarkup);
+  slider.slide.destroy();
+  console.log(slider.slide);
   Notiflix.Loading.remove(500);
 }
 
@@ -44,8 +56,9 @@ function pictureMarkup({ data }) {
   const { hits } = data;
   const markUp = hits
     .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-      return `<div class="photo-card">
-  <a href="${largeImageURL}"><img src="${webformatURL}" alt="${tags}" loading="lazy"  /></a>
+      return `
+      <a href="${largeImageURL}" class="photo-card">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy"  />
   <div class="info">
     <p class="info-item">
       <b>Likes</b>
@@ -64,7 +77,7 @@ function pictureMarkup({ data }) {
       <span>${downloads}</span>
     </p>
   </div>
-</div>`;
+</a>`;
     })
     .join('');
 
@@ -83,3 +96,5 @@ function showNotification({ data }) {
   Notiflix.Loading.remove(500);
   return Notiflix.Notify.success(`Hooray! We found ${data.total} images.`);
 }
+
+function createSlider() {}
