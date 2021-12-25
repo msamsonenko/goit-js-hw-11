@@ -2,8 +2,6 @@ import Notiflix from 'notiflix';
 
 import PicturesApi from './api-images';
 import Slider from './slider';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const form = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
@@ -11,10 +9,7 @@ const loadBtn = document.querySelector('.load-button');
 
 const pictures = new PicturesApi();
 const slider = new Slider();
-console.log(pictures);
-console.log(slider);
-
-// console.log(gallerySlider);
+console.log('1', slider);
 
 form.addEventListener('submit', onFormSubmit);
 loadBtn.addEventListener('click', onBtnClick);
@@ -28,27 +23,30 @@ function onFormSubmit(e) {
   gallery.innerHTML = '';
   pictures.query = searchQuery.value;
   pictures.resetPage();
-  pictures.getPictures().then(response => {
+  pictures.getPictures().then(async response => {
     if (response.data.hits.length === 0) {
       loadBtn.classList.add('is-hidden');
       return showNotification(response);
     }
     showNotification(response);
-    pictureMarkup(response);
+    await pictureMarkup(response);
     loadBtn.classList.remove('is-hidden');
+    console.log('2', slider);
     slider.createSlider();
-    console.log(slider.slide);
-
-    // console.log(slider.instance);
-    // let gallerySlider = new SimpleLightbox('.gallery a');
-    // gallerySlider.on('show.simplelightbox');
+    // slider.createSlider();
+    // console.log(slider.mySlider);
   });
+
+  console.log('3', slider);
 }
 
 function onBtnClick() {
-  pictures.getPictures().then(pictureMarkup);
-  slider.slide.destroy();
-  console.log(slider.slide);
+  pictures.getPictures().then(result => {
+    pictureMarkup(result);
+    console.log(slider);
+    console.log(slider);
+    slider.mySlider.refresh();
+  });
   Notiflix.Loading.remove(500);
 }
 
@@ -96,5 +94,3 @@ function showNotification({ data }) {
   Notiflix.Loading.remove(500);
   return Notiflix.Notify.success(`Hooray! We found ${data.total} images.`);
 }
-
-function createSlider() {}
