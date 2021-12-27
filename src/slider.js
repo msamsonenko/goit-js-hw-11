@@ -8,7 +8,7 @@ export default class Slider {
 
   createSlider() {
     console.log('hello');
-    return new SimpleLightbox('.gallery a').on('show.simplelightbox');
+    return new SimpleLightbox('#gallery a').on('show.simplelightbox');
   }
   refreshSlider() {
     this.mySlider.refresh();
