@@ -109,6 +109,7 @@ fieldset {
 }
 .photo-card {
   text-decoration: none;
+  color: #212121;
   margin: 5px;
   flex-basis: calc((100% - 8 * 15px) / 4);
 

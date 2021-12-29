@@ -10,7 +10,6 @@ const { form, gallery, loadBtn } = pageElements;
 
 const pictures = new PicturesApi();
 const slider = new Slider();
-console.log('1', slider.mySlider);
 
 form.addEventListener('submit', onFormSubmit);
 loadBtn.addEventListener('click', onBtnClick);
@@ -20,7 +19,7 @@ function onFormSubmit(e) {
   const {
     elements: { searchQuery },
   } = e.currentTarget;
-
+  console.log('1', searchQuery.value);
   gallery.innerHTML = '';
   pictures.query = searchQuery.value;
   pictures.resetPage();
@@ -31,15 +30,14 @@ function onFormSubmit(e) {
     }
     showNotification(response);
     pictureMarkup(response);
-    loadBtn.classList.remove('is-hidden');
     slider.createSlider();
+    loadBtn.classList.remove('is-hidden');
   });
 }
 
 function onBtnClick() {
   pictures.getPictures().then(result => {
     pictureMarkup(result);
-    // slider.mySlider.destroy();
     slider.refreshSlider();
   });
   Notiflix.Loading.remove(500);

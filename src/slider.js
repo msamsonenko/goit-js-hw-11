@@ -3,14 +3,13 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 export default class Slider {
   constructor() {
-    this.mySlider = this.createSlider();
+    this.mySlider = null;
   }
 
   createSlider() {
-    console.log('hello');
-    return new SimpleLightbox('#gallery a').on('show.simplelightbox');
+    return (this.mySlider = new SimpleLightbox('.gallery a').on('show.simplelightbox'));
   }
   refreshSlider() {
-    this.mySlider.refresh();
+    return this.mySlider.refresh();
   }
 }
